@@ -3,15 +3,17 @@
 
 PHP=$(which php)
 SCRIPTDIR=$(dirname "$0")
-INDIR=/srv/flashair/in
+INDIR=~/Pictures/
 
 exec_sync () {
 
         if ping -c 1 $2 > /dev/null
         then
-           $PHP -f $SCRIPTDIR/FlashAirSync.php -- --flashairip=$2 --syncto=$INDIR/$1 && $SCRIPTDIR/FlashAirSync.post $INDIR/$1 &
+           $PHP -f $SCRIPTDIR/FlashAirSync.php -- --flashairip=$2 --syncto=$INDIR/$1 & #&& $SCRIPTDIR/FlashAirSync.post $INDIR/$1 & //remove comment to use postprocessing scripts
         fi
 }
 
-exec_sync G11  192.168.2.20
+exec_sync K50 flashair
 
+#flashair = DNS name of flashair unit in passthrough or station mode. A fixed IP may also be used(10.0.0.42 etc.)
+# K50 where the files will go. IE. /Picture/k50(whatever the php adds)

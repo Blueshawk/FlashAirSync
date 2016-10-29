@@ -9,7 +9,7 @@ After=network-online.target
 Type=simple
 Restart=always
 ExecStartPre=/bin/sh -c "echo [`date`] FlashAirSync service starting > /var/log/FlashAirSync.log"
-ExecStart=/bin/sh -c "while true; do /srv/flashair/scripts/FlashAirSync.wrapper >> /var/log/FlashAirSync.log; sleep 10; done"
+ExecStart=/bin/sh -c "while true; do /~/Flashairsync/FlashAirSync.wrapper >> /var/log/FlashAirSync.log; sleep 10; done"
 
 [Install]
 WantedBy=multi-user.target
