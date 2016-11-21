@@ -1,18 +1,25 @@
 #!/bin/sh
 #
 # Postprocessing script for FlashAirSync, called at the end of FlashAirSync.php
-#
-# Creates Hardlinks of 'in' directory in 'temp' directory used for further process with exiftool etc.
+# 
 
-TMPDIR=/srv/flashair/temp
-OUTDIR=/srv/flashair/out
+TMPDIR=/home/hawk/Pictures/flashairtmp
+OUTDIR=/home/hawk/Pictures/K50
 
-find $1 -iname "*.*" -links 1 ! -iname ".*" ! -path "*.Manifest*" ! -path "*CANONMSC*" ! -path "*100__TSB*" -exec ln {} -d $TMPDIR \;
+#the line below is from an older version are used to create a hardlink which leaves the files in place while 
+#acting on the temporary duplicates. This could be used to make a backup copy as the files arrive before post processing takes place.
+#link files to a temp folder for processing -- preserves originals, bypassed to save space.
+#I used the  - options to move the actual files to parse the output in the same way. 
+#(this could probably be done neater somehow)
 
-JHEAD=$(which jhead)
-test -f $JHEAD || exit 2
+#find $1 -iname "*.*" -links 1 ! -iname ".*" ! -path "*.Manifest*" ! -path "*CANONMSC*" ! -path "*100__TSB*" -exec ln {} -d $TMPDIR \;
 
 EXIFTOOL=$(which exiftool)
 test -f $EXIFTOOL || exit 2
 
-find $TMPDIR -iname "*.jpg" -exec $JHEAD -autorot -ft {} \; -exec $EXIFTOOL '-filename<DateTimeOriginal' -d $OUTDIR/%Y-%m/%Y%m%dT%H%M%S_%%f.%%e {} \;
+#for each photo in TMPDIR get exif info and sort them into proper folders by date.
+find $TMPDIR -iname "*.JPG" ! -iname ".*" ! -path "*.Manifest*" ! -path "*CANONMSC*" ! -path "*100__TSB*" -exec $EXIFTOOL '-filename<DateTimeOriginal' -d $OUTDIR/%Y/%m%d/%%f.%%e {} \;
+find $TMPDIR -iname "*.DNG" ! -iname ".*" ! -path "*.Manifest*" ! -path "*CANONMSC*" ! -path "*100__TSB*" -exec $EXIFTOOL '-filename<DateTimeOriginal' -d $OUTDIR/%Y/%m%d/%%f.%%e {} \;
+find $TMPDIR -iname "*.MOV" ! -iname ".*" ! -path "*.Manifest*" ! -path "*CANONMSC*" ! -path "*100__TSB*" -exec $EXIFTOOL '-filename<DateTimeOriginal' -d $OUTDIR/%Y/%m%d/%%f.%%e {} \;
+sleep 5
+cp -u -r -p $OUTDIR/ /media/hawk/mybook/backup/Pictures/

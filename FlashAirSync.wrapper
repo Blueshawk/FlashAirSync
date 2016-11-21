@@ -1,19 +1,22 @@
 #!/bin/sh
 # Wrapper called from flashairsync.service (systemd) calls FlashAirSync.php with parameters
+# Change INDIR= to where you want the temp folder, the bottom command line shows the temp folder name,
+# and the ip of the Flashair card in STA or station mode, using a home wireless router. 
+# in AP mode you can Use its hostname to find it. Also check the time zone. 
+# The timezone names can be found at https://www.timeanddate.com/time/zones/ ...I think.
 
 PHP=$(which php)
 SCRIPTDIR=$(dirname "$0")
-INDIR=~/Pictures/
+INDIR=/home/hawk/Pictures
 
 exec_sync () {
 
-        if ping -c 1 $2 > /dev/null
-        then
-           $PHP -f $SCRIPTDIR/FlashAirSync.php -- --flashairip=$2 --syncto=$INDIR/$1 & #&& $SCRIPTDIR/FlashAirSync.post $INDIR/$1 & //remove comment to use postprocessing scripts
-        fi
+     if ping -c 1 $2 > /dev/null 
+       then
+            $PHP -f $SCRIPTDIR/FlashAirSync.php -- --flashairip=$2 --syncto=$INDIR/$1 --timezone=America/New_York
+            $SCRIPTDIR/FlashAirSync.post $INDIR/$1 
+     fi
+        
 }
 
-exec_sync K50 flashair
-
-#flashair = DNS name of flashair unit in passthrough or station mode. A fixed IP may also be used(10.0.0.42 etc.)
-# K50 where the files will go. IE. /Picture/k50(whatever the php adds)
+exec_sync flashairtmp 10.0.0.11 

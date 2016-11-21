@@ -1,5 +1,8 @@
 # systemd initialization file /etc/systemd/system/flashairsync.service
-#
+#copy to /etc/systemd/system in xubuntu 
+#Change User= in [service] to match your own and avoid ownership and permission issues. Also a decent security move imo.
+#Also change the paths to show your own username, using a variable $USER may work for some distros.
+
 [Unit]
 Description="FlashAirSync service"
 Wants=network-online.target
@@ -7,9 +10,9 @@ After=network-online.target
 
 [Service]
 Type=simple
+User=hawk
 Restart=always
-ExecStartPre=/bin/sh -c "echo [`date`] FlashAirSync service starting > /var/log/FlashAirSync.log"
-ExecStart=/bin/sh -c "while true; do /~/Flashairsync/FlashAirSync.wrapper >> /var/log/FlashAirSync.log; sleep 10; done"
-
+ExecStartPre=/bin/sh -c "echo [`date`] FlashAirSync service starting > /home/hawk/FlashAirSync/FlashAirSync.log"
+ExecStart=/bin/sh -c "while true; do /home/hawk/FlashAirSync/FlashAirSync.wrapper >> /home/hawk/FlashAirSync/FlashAirSync.log; sleep 15; done"
 [Install]
 WantedBy=multi-user.target

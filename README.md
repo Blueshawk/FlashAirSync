@@ -1,21 +1,28 @@
-Forked from alexdu from seemannj
+Forked from Mpsd using seemannj's PHP program to get files from a flashair card via wifi.
 
-Adds a systemd service wrapper and a post processing script to the fork mentioned above for my NAS setup
+Adds a systemd service wrapper and a post processing script to the PHP process
 
 Script chain
 ```
 flashairsync.service => FlashAirSync.wrapper => FlashAirSync.php => FlashAirSync.post
 ```
-where
+flashairsync.service is a systemd service that periodically(using sleep) runs the wrapper called
+FlashAirSync.wrapper which is a sh script calling
+FlashAirSync.php  only if the card is pingable and then calling
+FlashAirSync.post  an sh script to postprocess the new files and sort them into folders by year/date
+Various setup instructions can be found in the individual command files, which should be edited before running.
+copy Flashairsnc.service to /etc/systemd/system and execute:  
 
-flashairsync.service is a systemd service running on ubuntu 16.04
+sudo systemctl start flashairsync.service 
+sudo systemctl enable flashairsync.service 
 
-FlashAirSync.wrapper is a sh script calling
+To start and enable the servuce to run at boot.
 
-FlashAirSync.php     which is calling
+Monitor  ~/FlashAirSync/flashairsync.log to follow progress. 
+You can also check for errors using  systemctl -l status flashairsync.service
+or use journalctl -xe for a longer log of service status updates
 
-FlashAirSync.post    an sh script to postprocess the new files with jhead and exiftool 
-
+I've had to take a photo to get the process to start uploading form the camera on occasion.
 
 
 Original (forked) Readme:
